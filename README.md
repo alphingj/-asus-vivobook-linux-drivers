@@ -1,9 +1,9 @@
-# E1404FA Linux Pack — Vivobook Go 14 (Go 14)
+# ASUS Vivobook Linux Drivers
 
-Driver/plugin notes + one-command Linux setup for the **ASUS Vivobook Go
-E1404FA** (board `E1404FA`, Ryzen 5 7520U, PixArt `ASUP1411` touchpad with
-NumberPad). Goal: working touchpad NumberPad + backlight, fan profiles,
-and corner LED on Linux — without redistributing ASUS binaries.
+Community Linux driver notes + one-command setup for **ASUS Vivobook**
+laptops: touchpad NumberPad + backlight, fan profiles, and touchpad LED —
+without redistributing ASUS binaries. Reference model: **Vivobook Go
+E1404FA** (board `E1404FA`, Ryzen 5 7520U, PixArt `ASUP1411` touchpad).
 
 > All IDs below were read from the author's own unit (Windows 11, BIOS
 > `E1404FA.318`). No `.sys`/`.exe`/`.dll`/`.inf` files are included.
@@ -11,10 +11,10 @@ and corner LED on Linux — without redistributing ASUS binaries.
 ## One-command install (Linux)
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/alphingj/-asus-vivobook-linux-drivers/main/install.sh | bash
 ```
 
-Replace `<you>/<repo>` with this repo's path. What it does: installs deps
+Replace `alphingj/-asus-vivobook-linux-drivers` with this repo's path. What it does: installs deps
 (`i2c-tools`, python3, libevdev), enables `i2c-dev`, finds the touchpad bus
 (expects `0x15`), adds you to `i2c,input,uinput`, installs upstream
 `asus-numberpad-driver` with an E1404FA preset, and prints a read-only
@@ -28,7 +28,7 @@ fan/thermal report. Options:
 ./install.sh --bus 0 --addr 15 --yes
 ```
 
-From a clone: `git clone https://github.com/<you>/<repo>.git && cd <repo> && ./install.sh`.
+From a clone: `git clone https://github.com/alphingj/-asus-vivobook-linux-drivers.git && cd ./-asus-vivobook-linux-drivers && ./install.sh`.
 
 ## Status
 

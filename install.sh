@@ -5,10 +5,10 @@
 # models are detected automatically (see the Tested-models table in README.md).
 #
 # One-liner (inspect first, then run):
-#   curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/alphingj/-asus-vivobook-linux-drivers/main/install.sh | bash
 #
 # Or from a clone:
-#   git clone https://github.com/<you>/<repo>.git && cd <repo> && ./install.sh
+#   git clone https://github.com/alphingj/-asus-vivobook-linux-drivers.git && cd ./-asus-vivobook-linux-drivers && ./install.sh
 #
 # What it does (safe by default):
 #   1. installs distro deps (i2c-tools, python3, libevdev, curl)
