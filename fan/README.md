@@ -36,7 +36,7 @@ whether an ID exists on your BIOS rev.
 are unrelated — do not poke them for fan work.
 
 Read-only probe order: `0x00110019`, `0x00110018`, `0x00120075`,
-`0x00110011`. Use `tools/Probe-AsusWMI.ps1` (one ID per run, logs `DSTS`
+`0x00110011`. Use `../tools/Probe-AsusWMI.ps1` (one ID per run, logs `DSTS`
 hex). A missing ID returns `~0`/`ENODEV`-style; that is a finding, not an
 error. **Do not call `DEVS` until reads are understood and temps are
 monitored.**

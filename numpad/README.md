@@ -76,6 +76,6 @@ the E1404FA pad.
 - Lights but no keys: layout mismatch (grid math wrong) — try neighboring
   5-col layouts.
 - Keys but no lights: brightness-set mismatch — sweep `0x41`–`0x48` then
-  `0x20`–`0x2f` with `0x01`+`0x60` latched (see `tools/linux/numpad-test.sh`).
+  `0x20`–`0x2f` with `0x01`+`0x60` latched (see `../tools/linux/numpad-test.sh`).
 - NumLock corner LED dead while grid lights: separate LED path — see
-  `touchpad-led/README.md` (known `ASUP14xx` issue class).
+  `../touchpad-led/README.md` (known `ASUP14xx` issue class).

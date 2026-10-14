@@ -7,11 +7,11 @@ Two different lights, two different failure modes. Do not conflate them.
 
 ## 1. NumberPad grid backlight
 
-- Same I2C frame as `numpad/` (`05 00 3d 03 06 00 07 00 0d 14 03 <VAL> ad`
+- Same I2C frame as `../numpad/` (`05 00 3d 03 06 00 07 00 0d 14 03 <VAL> ad`
   @ `0x15`): `0x00` off, `0x01`+`0x60` on, `0x41`–`0x48` levels family.
 - If the grid never lights on Linux but keys work, the brightness `<VAL>`
   set is wrong for this panel — sweep read-only per
-  `tools/linux/numpad-test.sh` and the upstream FAQ.
+  `../tools/linux/numpad-test.sh` and the upstream FAQ.
 - Windows reference: hold top-right icon ~1 s (or corner slide), watch for
   the staged `0x01` then `0x60` + level write.
 

@@ -50,10 +50,14 @@ numpad/              I2C protocol, layouts, Linux port notes
 fan/                 WMI IDs, registry knobs, Linux mapping
 touchpad-led/        backlight vs corner LED, test protocol
 firmware/            ACPI/DSDT notes (ETPD, WMNB, _CRS 0x15)
-docs/                verified hardware + Windows driver inventory
+docs/                HARDWARE, WINDOWS-DRIVERS, ARCHITECTURE (diagrams),
+                     USER_GUIDE (30-min walkthrough), TROUBLESHOOTING
+CONTRIBUTING.md      what to report per revision
 ```
 
 ## Manual path (no script)
+
+Follow `docs/USER_GUIDE.md` (7 steps, ~30 min). Background per feature:
 
 1. `docs/HARDWARE.md` — confirm your unit matches (`ASUP1411`, `VID_093A`, `ASUS2018`).
 2. `numpad/README.md` — bus/addr check, layout pick, config keys.
@@ -90,7 +94,8 @@ features above. Battery-health charging and Splendid are out of scope.
 
 PRs with per-revision findings welcome: touchpad `VID:PID`, bus/addr,
 working brightness set, `DSTS` hex per fan ID, kernel version. Scrub
-serials and DSDT personalization before posting. See `numpad/`,
+serials and DSDT personalization before posting. Rules: `CONTRIBUTING.md`;
+stuck? `docs/TROUBLESHOOTING.md`. See `numpad/`,
 `fan/`, `touchpad-led/` for what to capture.
 
 ## Credits
