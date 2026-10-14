@@ -5,6 +5,9 @@ Single-fan Vivobook (Ryzen 5 7520U, ~15 W). Windows exposes Silent / Balanced
 the EC + `AsusSAIO`/`AsusWmiAcpi` drivers do the work. Nothing here writes
 the EC — read-only discovery first.
 
+> One-command Linux setup: `./install.sh --fan` (read-only report) or
+> `./install.sh --check-only`. Details below for manual setup.
+
 ## Control path (verified)
 
 ```text

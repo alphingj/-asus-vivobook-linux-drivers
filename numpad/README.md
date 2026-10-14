@@ -1,5 +1,8 @@
 # NumberPad on the E1404FA touchpad
 
+> One-command Linux setup: `curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/main/install.sh | bash`
+> (start with `./install.sh --check-only`). Details below for manual setup.
+
 ## What it is
 
 Illuminated numeric grid printed on the precision touchpad (`ASUP1411`,

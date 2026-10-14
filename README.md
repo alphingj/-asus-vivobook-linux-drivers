@@ -1,71 +1,102 @@
-# E1404FA Reverse Engineering Pack — Vivobook Go 14 (Go 14)
+# E1404FA Linux Pack — Vivobook Go 14 (Go 14)
 
-Reverse-engineered driver/plugin notes for the **ASUS Vivobook Go E1404FA
-(Vivobook Go 14, board `E1404FA`)** so owners can reimplement CPU-fan,
-touchpad-NumberPad, and touchpad-LED support — especially on Linux —
-without redistributing ASUS binaries.
+Driver/plugin notes + one-command Linux setup for the **ASUS Vivobook Go
+E1404FA** (board `E1404FA`, Ryzen 5 7520U, PixArt `ASUP1411` touchpad with
+NumberPad). Goal: working touchpad NumberPad + backlight, fan profiles,
+and corner LED on Linux — without redistributing ASUS binaries.
 
-> Scope: documentation + small probe scripts only. No ASUS `.sys`/`.exe`/
-> `.dll` files are included. All device paths below were read from the
-> author's own machine (Windows 11 Home, BIOS `E1404FA.318`).
+> All IDs below were read from the author's own unit (Windows 11, BIOS
+> `E1404FA.318`). No `.sys`/`.exe`/`.dll`/`.inf` files are included.
 
-## Machine (verified on author hardware)
+## One-command install (Linux)
 
-| Item | Value |
-|---|---|
-| Model | `Vivobook Go E1404FA_E1404FA`, vendor `ASUSTeK COMPUTER INC.` |
-| Board | `E1404FA` |
-| BIOS | `E1404FA.318` (AMI, 2026-01-16) |
-| CPU | AMD Ryzen 5 7520U w/ Radeon Graphics (Mendocino, 15 W class) |
-| Touchpad HID | `ACPI\ASUP1411`, HID `VID_093A` (PixArt), compat `PNP0C50` (I2C HID) |
-| ASUS control | `ACPI\ASUS2018` = ASUS System Control Interface v3, `3.1.72.0` |
-| ATK WMI GUID | `97845ED0-4E6D-11DE-8A39-0800200C9A66`, methods `DSTS`/`DEVS` etc. |
+```bash
+curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/main/install.sh | bash
+```
 
-## What works where
+Replace `<you>/<repo>` with this repo's path. What it does: installs deps
+(`i2c-tools`, python3, libevdev), enables `i2c-dev`, finds the touchpad bus
+(expects `0x15`), adds you to `i2c,input,uinput`, installs upstream
+`asus-numberpad-driver` with an E1404FA preset, and prints a read-only
+fan/thermal report. Options:
 
-| Feature | Windows 11 (stock) | Linux (expected) |
+```bash
+./install.sh --check-only   # detect only, change nothing (start here)
+./install.sh --numpad       # NumberPad only
+./install.sh --fan          # fan/thermal report only
+./install.sh --led-test     # interactive backlight/LED sweep (asks first)
+./install.sh --bus 0 --addr 15 --yes
+```
+
+From a clone: `git clone https://github.com/<you>/<repo>.git && cd <repo> && ./install.sh`.
+
+## Status
+
+| Feature | Windows 11 | Linux after this pack |
 |---|---|---|
-| CPU fan modes (Silent/Balanced/Turbo via MyASUS Fn+F5) | Yes (`AsusOptimization` + `AsusWmiAcpi.sys`) | Via `asus-wmi` `fan_boost_mode` / `throttle_thermal_policy` or `asusctl`/`supergfxctl` if IDs match — verify per §`fan/` |
-| Touchpad NumberPad grid + toggle | Yes (`AsusNUMPADFilter` + `AsusNumPadService`) | Via `asus-numberpad-driver` with I2C addr `0x15` — verify per §`numpad/` |
-| NumberPad backlight levels | Yes | Same I2C writes (`0x41`–`0x48` family) — verify |
-| Top-corner NumLock LED | Yes on Windows | Known problem class on newer `ASUP14xx` (see §`touchpad-led/`, upstream issue #289 pattern) |
+| NumberPad grid + toggle | Yes | Yes via upstream driver + E1404FA preset (`numpad/`) |
+| Grid backlight levels | Yes | `0x41`-`0x48` family first, sweep in `--led-test` |
+| Fan Silent/Balanced/Turbo (Fn+F5) | Yes | `fan_boost_mode` / `throttle_thermal_policy` or `asusctl` (`fan/`) |
+| Corner NumLock LED | Yes | Unverified — known `ASUP14xx` issue class (`touchpad-led/`) |
+| Temps/sensors | MyASUS | `sensors` (`k10temp`, `amdgpu`) |
 
 ## Layout
 
 ```text
-docs/            verified hardware + Windows driver inventory
-numpad/          NumberPad I2C protocol, layouts, Linux port notes
-fan/             fan/thermal WMI IDs, registry keys, Linux mapping
-touchpad-led/    backlight vs NumLock LED, troubleshooting
-firmware/        ACPI/DSDT notes (ETPD, WMNB, _CRS 0x15)
-tools/           Dump-E1404FA.ps1, Probe-AsusWMI.ps1, linux/numpad-test.sh
+install.sh           one-command Linux setup (this file's installer)
+tools/               Dump-E1404FA.ps1 (Windows inventory), Probe-AsusWMI.ps1
+                     (read-only WMI probe), linux/numpad-test.sh (manual sweep)
+numpad/              I2C protocol, layouts, Linux port notes
+fan/                 WMI IDs, registry knobs, Linux mapping
+touchpad-led/        backlight vs corner LED, test protocol
+firmware/            ACPI/DSDT notes (ETPD, WMNB, _CRS 0x15)
+docs/                verified hardware + Windows driver inventory
 ```
 
-## Quick start
+## Manual path (no script)
 
-1. Read `docs/HARDWARE.md`, then `docs/WINDOWS-DRIVERS.md`.
-2. NumberPad → `numpad/README.md`. Fan → `fan/README.md`. LED → `touchpad-led/README.md`.
-3. Run `tools/Dump-E1404FA.ps1` on your own E1404FA to compare IDs before
-   porting anything.
-4. For Linux, start from the linked upstream projects; this repo only adds
-   the E1404FA-specific IDs and verification checklists.
+1. `docs/HARDWARE.md` — confirm your unit matches (`ASUP1411`, `VID_093A`, `ASUS2018`).
+2. `numpad/README.md` — bus/addr check, layout pick, config keys.
+3. `fan/README.md` — read `DSTS` for `0x00110019`/`0x00110018`/`0x00120075` first; write one mode only with temps watched.
+4. `touchpad-led/README.md` — backlight vs LED are different paths; test separately.
+5. `firmware/ACPI.md` — dump your DSDT from a live USB for the ETPD/WMNB blocks.
 
 ## Safety
 
-- Fan/EC experiments can overheat or wear hardware. Change one thing at a
-  time, monitor `sensors`/`asusctl`, keep a way back to Balanced/UEFI defaults.
-- Raw I2C writes go to the touchpad controller. Use the exact 13-byte frame
-  from `numpad/` and the upstream `install_device_check.sh` flow; do not
-  fuzz the bus blindly.
-- Dual-boot Windows first if you can: confirm each feature works in Windows,
-  note the exact toggle sequence, then reproduce on Linux.
+- One variable at a time; keep UEFI defaults as the way back.
+- Never run `DEVS` (fan writes) or raw I2C writes blind — the scripts always
+  confirm IDs first and ask before touching hardware.
+- Dual-boot Windows if you can: prove each feature there, note the exact
+  toggle, then reproduce on Linux.
 
-## Upstream credits
+## FAQ
 
-- `asus-linux-drivers/asus-numberpad-driver` (I2C NumberPad protocol, layouts)
-- Linux kernel `drivers/platform/x86/asus-wmi.c` (WMI IDs, fan/thermal policy)
-- `asus-linux-org/asusctl` + `supergfxctl` (modern fan/profile control)
+**Which bus/address?** `i2c-N` from the touchpad block of
+`/proc/bus/input/devices`, address `0x15` (`0x38` only for
+`ASUF1416/1205/1204`). `--check-only` prints both.
 
-## License
+**Keys work but no light?** Wrong brightness set — run `--led-test`.
 
-MIT — see `LICENSE`. ASUS names/marks belong to their owners.
+**Grid lights but corner LED dark?** Separate path; see `touchpad-led/`
+and report your value table.
+
+**No `asus` platform device?** `asus-wmi` did not bind — check
+`dmesg | grep -i asus`, try a newer kernel, then `asusctl`.
+
+**Does this replace MyASUS?** No — it reimplements the three hardware
+features above. Battery-health charging and Splendid are out of scope.
+
+## Contributing
+
+PRs with per-revision findings welcome: touchpad `VID:PID`, bus/addr,
+working brightness set, `DSTS` hex per fan ID, kernel version. Scrub
+serials and DSDT personalization before posting. See `numpad/`,
+`fan/`, `touchpad-led/` for what to capture.
+
+## Credits
+
+- `asus-linux-drivers/asus-numberpad-driver` (I2C protocol, layouts)
+- Linux `drivers/platform/x86/asus-wmi.c` (WMI IDs)
+- `asus-linux-org/asusctl` + `supergfxctl` (profiles)
+
+MIT — see `LICENSE`. ASUS marks belong to their owners.

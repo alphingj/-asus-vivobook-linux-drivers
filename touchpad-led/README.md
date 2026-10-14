@@ -2,6 +2,9 @@
 
 Two different lights, two different failure modes. Do not conflate them.
 
+> One-command sweep: `./install.sh --led-test` (asks before each write).
+> Manual values below.
+
 ## 1. NumberPad grid backlight
 
 - Same I2C frame as `numpad/` (`05 00 3d 03 06 00 07 00 0d 14 03 <VAL> ad`
