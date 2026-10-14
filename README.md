@@ -40,6 +40,17 @@ From a clone: `git clone https://github.com/<you>/<repo>.git && cd <repo> && ./i
 | Corner NumLock LED | Yes | Unverified — known `ASUP14xx` issue class (`touchpad-led/`) |
 | Temps/sensors | MyASUS | `sensors` (`k10temp`, `amdgpu`) |
 
+## Tested models
+
+Windows-side IDs are verified on the author's unit; Linux columns need
+test reports (see `CONTRIBUTING.md`). The installer auto-detects the
+`ASUP`/`ASUE`/`ASUF`/`ELAN` families — E1404FA values are just defaults.
+
+| Model | Touchpad | Addr | NumberPad | Backlight | Fan | Corner LED |
+|---|---|---|---|---|---|---|
+| Vivobook Go 14 E1404FA (author) | `ASUP1411` / `093A` | `0x15` | Expected via upstream | `0x41`-`0x48` family, untested | IDs documented, untested | Unknown |
+| Your Vivobook here | ? | ? | ? | ? | ? | ? |
+
 ## Layout
 
 ```text

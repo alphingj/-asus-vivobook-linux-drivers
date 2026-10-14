@@ -6,11 +6,12 @@ root or via the one-liner in `../README.md`.
 ## 0. Confirm the unit matches
 
 ```bash
-grep -i -A2 touchpad /proc/bus/input/devices | grep -i -E 'ASUP1411|093A'
+grep -i -A2 touchpad /proc/bus/input/devices | grep -i -E 'ASUP|ASUE|ASUF|ELAN|093A|04F3'
 ```
 
-Expect `ASUP1411` and a `093A` VID. If yours differs, stop and file it
-(see `../CONTRIBUTING.md`) — the I2C values below may not apply.
+Expect an `ASU*`/`ELAN` name; `ASUP1411` + `093A` is the tested E1404FA
+combo. Other families work via auto-detection — report yours
+(see `../CONTRIBUTING.md`).
 
 ## 1. Detect only
 

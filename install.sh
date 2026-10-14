@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 #
-# Vivobook Go E1404FA - one-command Linux setup for NumberPad, fan and LED.
+# ASUS Vivobook NumberPad - one-command Linux setup for NumberPad, fan and LED.
+# Defaults match the Vivobook Go E1404FA; other Vivobook/Zenbook NumberPad
+# models are detected automatically (see the Tested-models table in README.md).
 #
 # One-liner (inspect first, then run):
 #   curl -fsSL https://raw.githubusercontent.com/<you>/<repo>/main/install.sh | bash
@@ -94,14 +96,15 @@ detect_touchpad() {
   local dev=/proc/bus/input/devices
   [ -f "$dev" ] || die "$dev missing (not Linux or no input layer)"
   local blk
-  blk="$(grep -B1 -A6 -i touchpad "$dev" | grep -B1 -A6 -i -E 'ASUP1411|093A|ASUE14|ELAN' | head -20 || true)"
-  [ -n "$blk" ] || die "no ASUS/PixArt touchpad found in $dev"
+  blk="$(grep -B1 -A6 -i touchpad "$dev" | grep -B1 -A6 -i -E 'ASUP|ASUE|ASUF|ELAN|093A|04F3' | head -20 || true)"
+  [ -n "$blk" ] || die "no ASUS/ELAN/PixArt touchpad found in $dev"
   log "touchpad block:"; printf '%s\n' "$blk" | sed 's/^/[e1404fa]   /'
   if [ -z "$BUS" ]; then
     BUS="$(printf '%s\n' "$blk" | grep -o -E 'i2c-[0-9]+' | head -1 | cut -d- -f2 || true)"
     [ -n "$BUS" ] || die "could not parse i2c bus; pass --bus N"
   fi
   if printf '%s\n' "$blk" | grep -q -E 'ASUF1416|ASUF1205|ASUF1204'; then ADDR="38"; fi
+  if printf '%s\n' "$blk" | grep -q 'ASUP1411'; then log "E1404FA-series pad detected, using tested defaults"; fi
   log "using bus i2c-$BUS addr 0x$ADDR"
 }
 
@@ -130,7 +133,7 @@ install_numpad() {
     log "preset applied: default_backlight_level = 0x01 in $cfg"
   fi
   {
-    echo "E1404FA note: pick the 5-column layout matching your printed grid;"
+    echo "Model note: pick the layout matching your printed grid (5-column on E1404FA);"
     echo "brightness family to try first: 0x41-0x48 at i2c-$BUS 0x$ADDR.";
     echo "bus=$BUS addr=$ADDR detected $(date -u +%FT%TZ)"
   } | sudo tee /usr/share/asus-numberpad-driver/E1404FA.txt >/dev/null 2>&1 || true
