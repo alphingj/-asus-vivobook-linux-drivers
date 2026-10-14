@@ -1,0 +1,16 @@
+# ---> Windows junk, ASUS secrets, firmware dumps
+Thumbs.db
+Desktop.ini
+*.log
+DSDT
+DSDT.dsl
+DSDT.aml
+ssdt*.dat
+*.cap
+# Never commit vendor binaries or anyone's serials
+*.sys
+*.exe
+*.dll
+*.cat
+*.inf
+serials.txt
